@@ -1,8 +1,10 @@
-var gulp = require('gulp')
-var browserSync = require('browser-sync').create()
-var sass = require('gulp-ruby-sass')
-var autoprefixer = require('gulp-autoprefixer')
+var gulp = require('gulp');
+var browserSync = require('browser-sync').create();
+var sass = require('gulp-ruby-sass');
+var autoprefixer = require('gulp-autoprefixer');
 var minifycss = require('gulp-minify-css')
+var uglify = require('gulp-uglify');
+var imagemin = require('gulp-imagemin');
 
 gulp.task('serve',['sass'], function() {
     browserSync.init({
@@ -11,6 +13,7 @@ gulp.task('serve',['sass'], function() {
 
     gulp.watch("scss/app.scss", ['sass']);
     gulp.watch("./*.html").on('change', browserSync.reload);
+    gulp.watch("js/*.js", ['js']).on('change', browserSync.reload);
 });
 
 gulp.task('sass', function () {
@@ -23,6 +26,21 @@ gulp.task('sass', function () {
         .pipe(browserSync.stream());
 });
 
+gulp.task('js', function () {
+    return gulp.src('js/*js')
+        .pipe(uglify())
+        .pipe(gulp.dest('dist/js'));
+});
+
+gulp.task('images', function() {
+  return gulp.src('images/*')
+    .pipe(imagemin({optimizationLevel: 5}))
+    .pipe(gulp.dest('dist/images'));
+});
 
 
-gulp.task('default', ['serve']);
+gulp.task('watch', function() {
+  gulp.watch('images/*', ['images']);
+});
+
+gulp.task('default', ['serve','watch']);
