@@ -5,6 +5,7 @@ var autoprefixer = require('gulp-autoprefixer');
 var minifycss = require('gulp-minify-css')
 var uglify = require('gulp-uglify');
 var imagemin = require('gulp-imagemin');
+var cache = require('gulp-cache');
 
 gulp.task('serve',['sass'], function() {
     browserSync.init({
@@ -34,7 +35,7 @@ gulp.task('js', function () {
 
 gulp.task('images', function() {
   return gulp.src('images/*')
-    .pipe(imagemin({optimizationLevel: 5}))
+    .pipe(cache(imagemin({optimizationLevel: 5})))
     .pipe(gulp.dest('dist/images'));
 });
 
@@ -43,4 +44,4 @@ gulp.task('watch', function() {
   gulp.watch('images/*', ['images']);
 });
 
-gulp.task('default', ['serve','watch']);
+gulp.task('default', ['serve','watch','images']);
